@@ -1,0 +1,628 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tech Jagannath</title>
+  <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Exo+2:wght@300;400;600&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --bg:       #060a10;
+      --surface:  #0d1520;
+      --card:     #111d2e;
+      --border:   #1e3a5f;
+      --red:      #c0202e;
+      --red-glow: #e8253680;
+      --gold:     #c9963b;
+      --gold-lt:  #f0c060;
+      --blue:     #1a6eb5;
+      --blue-lt:  #4da6ff;
+      --text:     #dce8f5;
+      --muted:    #7a9bb5;
+      --white:    #ffffff;
+    }
+
+    *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Exo 2', sans-serif;
+      font-weight: 300;
+      line-height: 1.7;
+      overflow-x: hidden;
+    }
+
+    /* ── NOISE OVERLAY ── */
+    body::before {
+      content:'';
+      position:fixed; inset:0; z-index:0; pointer-events:none;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+      opacity:.4;
+    }
+
+    /* ── UTILITY ── */
+    .container { max-width: 1140px; margin: auto; padding: 0 24px; position:relative; z-index:1; }
+    .accent-red  { color: var(--red); }
+    .accent-gold { color: var(--gold-lt); }
+
+    /* ── HEADER ── */
+    header {
+      position: sticky; top: 0; z-index: 100;
+      background: rgba(6,10,16,.85);
+      backdrop-filter: blur(14px);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 16px 0;
+    }
+    .brand {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 24px; font-weight: 700; letter-spacing: 2px;
+      color: var(--white);
+    }
+    .brand span { color: var(--red); }
+
+    .nav-links { display: flex; gap: 28px; align-items: center; }
+    .nav-links a {
+      text-decoration: none; color: var(--muted);
+      font-size: 13px; letter-spacing: 1.5px; text-transform: uppercase;
+      transition: color .25s;
+    }
+    .nav-links a:hover { color: var(--gold-lt); }
+
+    .nav-cta {
+      padding: 8px 20px;
+      background: var(--red);
+      color: #fff !important;
+      border-radius: 4px;
+      font-weight: 600;
+      letter-spacing: 1px;
+      transition: background .25s, box-shadow .25s !important;
+    }
+    .nav-cta:hover {
+      background: #e0303f !important;
+      box-shadow: 0 0 18px var(--red-glow) !important;
+      color: #fff !important;
+    }
+
+    /* hamburger */
+    .hamburger {
+      display: none; flex-direction: column; gap: 5px; cursor: pointer; z-index:200;
+    }
+    .hamburger span {
+      display: block; width: 26px; height: 2px;
+      background: var(--gold-lt); border-radius: 2px;
+      transition: transform .3s, opacity .3s;
+    }
+    .hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+    .hamburger.open span:nth-child(2) { opacity: 0; }
+    .hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+    /* mobile menu */
+    .mobile-menu {
+      display: none; position: fixed; inset: 0; z-index: 150;
+      background: rgba(6,10,16,.97);
+      flex-direction: column; align-items: center; justify-content: center;
+      gap: 32px;
+    }
+    .mobile-menu.open { display: flex; }
+    .mobile-menu a {
+      font-family: 'Rajdhani', sans-serif; font-size: 28px; font-weight: 700;
+      color: var(--text); text-decoration: none; letter-spacing: 3px; text-transform: uppercase;
+      transition: color .25s;
+    }
+    .mobile-menu a:hover { color: var(--gold-lt); }
+
+    /* ── HERO ── */
+    .hero {
+      padding: clamp(80px, 14vw, 140px) 0 clamp(60px, 10vw, 110px);
+      text-align: center;
+      position: relative; overflow: hidden;
+    }
+
+    /* arc reactor glow behind hero */
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      width: min(700px, 130vw); height: min(700px, 130vw);
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(26,110,181,.18) 0%, rgba(192,32,46,.10) 40%, transparent 70%);
+      pointer-events: none;
+      animation: pulse 5s ease-in-out infinite;
+    }
+    @keyframes pulse {
+      0%,100% { transform: translate(-50%,-50%) scale(1); opacity:.8; }
+      50%      { transform: translate(-50%,-50%) scale(1.08); opacity:1; }
+    }
+
+    .hero-badge {
+      display: inline-block;
+      padding: 5px 16px;
+      background: rgba(192,32,46,.15);
+      border: 1px solid rgba(192,32,46,.4);
+      border-radius: 20px;
+      font-size: 12px; letter-spacing: 2px; text-transform: uppercase;
+      color: #f07080; margin-bottom: 22px;
+      animation: fadeUp .6s ease both;
+    }
+
+    .hero h1 {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: clamp(34px, 7vw, 72px);
+      font-weight: 700; line-height: 1.1;
+      letter-spacing: 1px;
+      color: var(--white);
+      animation: fadeUp .7s .1s ease both;
+    }
+    .hero h1 em {
+      font-style: normal;
+      background: linear-gradient(90deg, var(--gold) 0%, var(--gold-lt) 50%, var(--gold) 100%);
+      -webkit-background-clip: text; background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .hero p {
+      max-width: 540px; margin: 18px auto 36px;
+      color: var(--muted); font-size: clamp(15px, 2.2vw, 17px);
+      animation: fadeUp .7s .2s ease both;
+    }
+
+    .hero-btns {
+      display: flex; gap: 14px; justify-content: center; flex-wrap: wrap;
+      animation: fadeUp .7s .3s ease both;
+    }
+
+    @keyframes fadeUp {
+      from { opacity:0; transform:translateY(22px); }
+      to   { opacity:1; transform:translateY(0); }
+    }
+
+    /* divider */
+    .divider {
+      width: 60px; height: 3px; margin: 0 auto 50px;
+      background: linear-gradient(90deg, var(--red), var(--gold));
+      border-radius: 2px;
+    }
+
+    /* ── BUTTONS ── */
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center;
+      gap: 8px; padding: 13px 28px;
+      border-radius: 5px; border: none; cursor: pointer;
+      font-family: 'Exo 2', sans-serif; font-size: 14px;
+      font-weight: 600; letter-spacing: 1.2px; text-transform: uppercase;
+      text-decoration: none; transition: all .25s;
+    }
+    .btn-primary {
+      background: var(--red);
+      color: #fff;
+      box-shadow: 0 0 0 rgba(192,32,46,0);
+    }
+    .btn-primary:hover {
+      background: #e0303f;
+      box-shadow: 0 4px 28px var(--red-glow);
+      transform: translateY(-2px);
+    }
+    .btn-outline {
+      background: transparent;
+      border: 1px solid var(--gold);
+      color: var(--gold-lt);
+    }
+    .btn-outline:hover {
+      background: rgba(201,150,59,.12);
+      box-shadow: 0 4px 22px rgba(201,150,59,.25);
+      transform: translateY(-2px);
+    }
+
+    /* ── SECTIONS ── */
+    .section { padding: clamp(60px, 9vw, 100px) 0; }
+    .section-label {
+      text-align: center; letter-spacing: 3px; text-transform: uppercase;
+      font-size: 12px; color: var(--red); margin-bottom: 12px;
+    }
+    .section-title {
+      text-align: center;
+      font-family: 'Rajdhani', sans-serif;
+      font-size: clamp(28px, 4.5vw, 44px);
+      font-weight: 700; color: var(--white); margin-bottom: 16px;
+    }
+    .section-sub {
+      text-align: center; color: var(--muted);
+      max-width: 500px; margin: 0 auto 50px; font-size: 15px;
+    }
+
+    /* ── SERVICE CARDS ── */
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 22px;
+    }
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 28px 24px;
+      position: relative; overflow: hidden;
+      transition: transform .3s, border-color .3s, box-shadow .3s;
+    }
+    .card::before {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0; height: 3px;
+      background: linear-gradient(90deg, var(--red), var(--gold));
+      transform: scaleX(0); transform-origin: left;
+      transition: transform .35s;
+    }
+    .card:hover { transform: translateY(-6px); border-color: #2a5a8a; box-shadow: 0 12px 40px rgba(0,0,0,.5); }
+    .card:hover::before { transform: scaleX(1); }
+
+    .card-icon {
+      width: 44px; height: 44px; border-radius: 8px;
+      background: rgba(192,32,46,.15);
+      border: 1px solid rgba(192,32,46,.3);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 20px; margin-bottom: 18px;
+    }
+    .card h3 {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 20px; font-weight: 700; color: var(--white);
+      margin-bottom: 8px;
+    }
+    .card p { color: var(--muted); font-size: 14px; }
+
+    /* ── STATS STRIP ── */
+    .stats-strip {
+      background: var(--surface);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      padding: 44px 0;
+    }
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 24px; text-align: center;
+    }
+    .stat-num {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: clamp(36px, 5vw, 52px);
+      font-weight: 700; line-height: 1;
+      background: linear-gradient(90deg, var(--red), var(--gold-lt));
+      -webkit-background-clip: text; background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .stat-label { font-size: 13px; color: var(--muted); letter-spacing: 1px; margin-top: 6px; }
+
+    /* ── PRODUCT ── */
+    .product-section {
+      background: linear-gradient(135deg, #08101a 0%, #0e1e30 40%, #0a0e14 100%);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      padding: clamp(60px, 9vw, 100px) 0;
+    }
+    .product-inner {
+      display: flex; align-items: center; gap: 60px; flex-wrap: wrap;
+    }
+    .product-text { flex: 1 1 280px; }
+    .product-text h2 {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: clamp(28px, 4.5vw, 44px);
+      font-weight: 700; color: var(--white); margin-bottom: 16px;
+    }
+    .product-text p { color: var(--muted); margin-bottom: 28px; font-size: 15px; }
+
+    .product-pill {
+      display: inline-block; padding: 4px 12px;
+      background: rgba(77,166,255,.12);
+      border: 1px solid rgba(77,166,255,.3);
+      border-radius: 20px; font-size: 12px; color: var(--blue-lt);
+      letter-spacing: 1px; margin-bottom: 14px;
+    }
+
+    .product-visual {
+      flex: 1 1 260px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px; padding: 32px;
+      text-align: center;
+      position: relative; overflow: hidden;
+    }
+    .product-visual::after {
+      content: '';
+      position: absolute; inset: -2px;
+      border-radius: 18px;
+      background: linear-gradient(135deg, var(--red), transparent, var(--gold));
+      z-index: -1;
+    }
+    .tapex-logo {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 56px; font-weight: 700; letter-spacing: 4px;
+      background: linear-gradient(90deg, var(--gold), var(--gold-lt));
+      -webkit-background-clip: text; background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .tapex-sub { color: var(--muted); font-size: 13px; letter-spacing: 2px; margin-top: 6px; }
+
+    /* ── CONTACT ── */
+    .contact-box {
+      max-width: 560px; margin: 0 auto;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px; padding: clamp(28px, 5vw, 48px);
+      text-align: center;
+    }
+    .contact-box h3 {
+      font-family: 'Rajdhani', sans-serif; font-size: 26px; font-weight: 700;
+      color: var(--white); margin-bottom: 10px;
+    }
+    .contact-box p { color: var(--muted); margin-bottom: 24px; font-size: 15px; }
+    .email-chip {
+      display: inline-flex; align-items: center; gap: 10px;
+      padding: 13px 24px;
+      background: rgba(201,150,59,.1);
+      border: 1px solid rgba(201,150,59,.35);
+      border-radius: 8px;
+      color: var(--gold-lt); font-size: 15px; letter-spacing: .5px;
+      text-decoration: none;
+      transition: background .25s, box-shadow .25s;
+    }
+    .email-chip:hover {
+      background: rgba(201,150,59,.18);
+      box-shadow: 0 0 24px rgba(201,150,59,.25);
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      background: var(--surface);
+      border-top: 1px solid var(--border);
+      padding: 28px 24px;
+    }
+    .footer-inner {
+      display: flex; align-items: center; justify-content: space-between;
+      flex-wrap: wrap; gap: 12px;
+    }
+    .footer-brand {
+      font-family: 'Rajdhani', sans-serif; font-size: 18px; font-weight: 700;
+      color: var(--white);
+    }
+    .footer-brand span { color: var(--red); }
+    footer p { color: var(--muted); font-size: 13px; }
+    .footer-links { display: flex; gap: 20px; }
+    .footer-links a { color: var(--muted); font-size: 13px; text-decoration: none; transition: color .2s; }
+    .footer-links a:hover { color: var(--gold-lt); }
+
+    /* ── MODAL ── */
+    .modal {
+      display: none; position: fixed; inset: 0; z-index: 300;
+      background: rgba(0,0,0,.75);
+      backdrop-filter: blur(6px);
+      align-items: center; justify-content: center;
+    }
+    .modal.open { display: flex; animation: fadeIn .25s ease; }
+    @keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
+
+    .modal-box {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px; padding: 40px 36px;
+      text-align: center; max-width: 400px; width: 90%;
+      animation: slideUp .3s ease;
+    }
+    @keyframes slideUp { from { transform:translateY(30px); opacity:0; } to { transform:none; opacity:1; } }
+
+    .modal-box h3 {
+      font-family: 'Rajdhani', sans-serif; font-size: 26px; font-weight: 700;
+      color: var(--white); margin-bottom: 10px;
+    }
+    .modal-box p { color: var(--muted); margin-bottom: 20px; }
+    .modal-email {
+      display: block; font-size: 16px; color: var(--gold-lt);
+      margin-bottom: 24px; text-decoration: none;
+      transition: color .2s;
+    }
+    .modal-email:hover { color: var(--gold); }
+
+    .modal-close {
+      background: none; border: 1px solid var(--border);
+      color: var(--muted); padding: 9px 22px; border-radius: 5px;
+      cursor: pointer; font-size: 13px; letter-spacing: 1px; text-transform: uppercase;
+      transition: border-color .2s, color .2s;
+    }
+    .modal-close:hover { border-color: var(--red); color: var(--red); }
+
+    /* ── SCROLLBAR ── */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: var(--bg); }
+    ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 640px) {
+      .hamburger { display: flex; }
+      .nav-links  { display: none; }
+      .product-inner { flex-direction: column; gap: 36px; }
+      .footer-inner { flex-direction: column; align-items: flex-start; gap: 16px; }
+    }
+    @media (max-width: 400px) {
+      .hero-btns { flex-direction: column; align-items: stretch; }
+      .btn { text-align: center; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ═══ HEADER ═══ -->
+<header>
+  <div class="container nav">
+    <div class="brand">TECH<span>J</span></div>
+    <nav class="nav-links">
+      <a href="#services">Services</a>
+      <a href="#product">Product</a>
+      <a href="#contact">Contact</a>
+      <a href="#" class="nav-cta" onclick="openModal(event)">Get Started</a>
+    </nav>
+    <div class="hamburger" id="hamburger" onclick="toggleMenu()" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </div>
+  </div>
+</header>
+
+<!-- mobile menu -->
+<div class="mobile-menu" id="mobileMenu">
+  <a href="#services" onclick="closeMenu()">Services</a>
+  <a href="#product" onclick="closeMenu()">Product</a>
+  <a href="#contact" onclick="closeMenu()">Contact</a>
+  <a href="#" onclick="closeMenu(); openModal(event)" class="btn btn-primary" style="font-size:18px">Get Started</a>
+</div>
+
+<!-- ═══ HERO ═══ -->
+<section class="hero">
+  <div class="container">
+    <div class="hero-badge">⚡ Powered by Innovation</div>
+    <h1>Building <em>Scalable</em><br>Web Solutions</h1>
+    <p>Websites, Web Apps & Maintenance — crafted for performance, built to last.</p>
+    <div class="hero-btns">
+      <button class="btn btn-primary" onclick="openModal(event)">Get Started</button>
+      <a href="#services" class="btn btn-outline">View Services</a>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ STATS ═══ -->
+<div class="stats-strip">
+  <div class="container">
+    <div class="stats-grid">
+      <!-- <div><div class="stat-num">50+</div><div class="stat-label">Projects Delivered</div></div> -->
+      <div><div class="stat-num">99%</div><div class="stat-label">Uptime Guaranteed</div></div>
+      <div><div class="stat-num">5★</div><div class="stat-label">Client Rating</div></div>
+      <div><div class="stat-num">24/7</div><div class="stat-label">Support Available</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ SERVICES ═══ -->
+<section id="services" class="section">
+  <div class="container">
+    <div class="section-label">What We Do</div>
+    <h2 class="section-title">Our Services</h2>
+    <p class="section-sub">End-to-end web solutions — from concept to cloud deployment.</p>
+    <div class="divider"></div>
+    <div class="cards">
+      <div class="card">
+        <div class="card-icon">🌐</div>
+        <h3>Website Development</h3>
+        <p>Business websites, landing pages, and portfolios crafted for conversion and performance.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">⚙️</div>
+        <h3>Web Applications</h3>
+        <p>Custom, scalable apps and REST APIs engineered for real-world demand.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">🔧</div>
+        <h3>Maintenance</h3>
+        <p>Bug fixing, speed optimization, and proactive monitoring — we keep your site battle-ready.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">☁️</div>
+        <h3>Cloud & Deployment</h3>
+        <p>AWS setup, CI/CD pipelines, domain management, and SSL — launch with confidence.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ PRODUCT ═══ -->
+<section id="product" class="product-section">
+  <div class="container">
+    <div class="product-inner">
+      <div class="product-text">
+        <div class="product-pill">Featured Product</div>
+        <h2>Meet <span style="color:var(--gold-lt)">Tapaxe</span></h2>
+        <p>Tapaxe turns everyday items and identities into smart, scannable profiles—instantly sharing essential information with a single tap or a scan.</p>
+        <a href="https://tapaxe.techjagannath.com/" target="_blank" rel="noopener" class="btn btn-primary">
+          Visit Tapaxe →
+        </a>
+      </div>
+      <div class="product-visual">
+        <div class="tapex-logo">TAPAXE</div>
+        <div class="tapex-sub">TAP. SHARE. CONNECT</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ CONTACT ═══ -->
+<section id="contact" class="section">
+  <div class="container">
+    <div class="section-label">Get In Touch</div>
+    <h2 class="section-title">Contact Us</h2>
+    <p class="section-sub">Ready to build something extraordinary? Let's talk.</p>
+    <div class="divider"></div>
+    <div class="contact-box">
+      <h3>Send Us a Message</h3>
+      <p>We respond within 24 hours, usually much sooner.</p>
+      <a href="mailto:info@techjagannath.com" class="email-chip">
+        ✉ info@techjagannath.com
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ FOOTER ═══ -->
+<footer>
+  <div class="container footer-inner">
+    <div class="footer-brand">TECH<span>J</span>AGANNATH</div>
+    <p>© 2026 Tech Jagannath. All rights reserved.</p>
+    <div class="footer-links">
+      <a href="#services">Services</a>
+      <a href="#product">Product</a>
+      <a href="#contact">Contact</a>
+    </div>
+  </div>
+</footer>
+
+<!-- ═══ MODAL ═══ -->
+<div id="emailModal" class="modal" onclick="handleModalClick(event)">
+  <div class="modal-box">
+    <h3>Let's Build Together</h3>
+    <p>Reach out and our team will get back to you swiftly.</p>
+    <a href="mailto:info@techjagannath.com" class="modal-email">info@techjagannath.com</a>
+    <button class="modal-close" onclick="closeModal()">Close</button>
+  </div>
+</div>
+
+<script>
+  function openModal(e) { if(e) e.preventDefault(); document.getElementById('emailModal').classList.add('open'); }
+  function closeModal() { document.getElementById('emailModal').classList.remove('open'); }
+  function handleModalClick(e) { if(e.target === e.currentTarget) closeModal(); }
+
+  function toggleMenu() {
+    document.getElementById('hamburger').classList.toggle('open');
+    document.getElementById('mobileMenu').classList.toggle('open');
+    document.body.style.overflow = document.getElementById('mobileMenu').classList.contains('open') ? 'hidden' : '';
+  }
+  function closeMenu() {
+    document.getElementById('hamburger').classList.remove('open');
+    document.getElementById('mobileMenu').classList.remove('open');
+    document.body.style.overflow = '';
+  }
+
+  // close modal on Escape
+  document.addEventListener('keydown', e => { if(e.key === 'Escape') closeModal(); });
+
+  // subtle scroll-reveal
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(e => { if(e.isIntersecting) { e.target.style.opacity=1; e.target.style.transform='translateY(0)'; } });
+  }, { threshold: 0.12 });
+
+  document.querySelectorAll('.card, .contact-box, .product-visual').forEach(el => {
+    el.style.cssText += 'opacity:0;transform:translateY(28px);transition:opacity .55s ease,transform .55s ease';
+    observer.observe(el);
+  });
+</script>
+</body>
+</html>
